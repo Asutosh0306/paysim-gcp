@@ -1,0 +1,42 @@
+steps:
+  - name: gcr.io/cloud-builders/gcloud
+    args: ["info"]
+
+  - name: hashicorp/terraform:1.6.6
+    entrypoint: sh
+    args:
+      - -c
+      - |
+        cd infra
+        terraform init
+        terraform fmt -check
+        terraform validate
+        terraform plan -out=tfplan -var="project_id=$PROJECT_ID" -var="region=${_REGION}" -var="location=${_REGION}"
+        terraform apply -auto-approve tfplan
+
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      [
+        "functions","deploy","loan-csv-to-bq",
+        "--gen2","--runtime=python311","--region=${_REGION}",
+        "--entry-point=gcs_ingest",
+        "--trigger-bucket=${PROJECT_ID}-raw",
+        "--source=app/function_ingest",
+        "--set-env-vars","DATASET_BZ=bronze,TABLE_BZ=paysim_raw"
+      ]
+
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -lc
+      - |
+        for f in sql/*.sql; do
+          echo "Running $f"
+          gcloud bq query --use_legacy_sql=false "$(sed "s/{{project}}/${PROJECT_ID}/g" "$f")"
+        done
+
+substitutions:
+  _REGION: europe-west2
+
+options:
+  logging: CLOUD_LOGGING_ONLY
