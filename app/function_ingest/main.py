@@ -1,6 +1,6 @@
 import os
-from google.cloud import bigquery
 from cloudevents.http import CloudEvent
+from google.cloud import bigquery
 import functions_framework
 
 bq = bigquery.Client()

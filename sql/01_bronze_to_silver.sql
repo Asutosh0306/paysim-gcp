@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE `{{project}}.silver.paysim_clean` AS
+CREATE OR REPLACE TABLE `paysim-fin.silver.paysim_clean` AS
 SELECT
   step,
   type,
@@ -13,5 +13,5 @@ SELECT
   isflaggedfraud,
   source_object,
   ingest_ts
-FROM `{{project}}.bronze.paysim_raw`
+FROM `paysim-fin.bronze.paysim_raw`
 WHERE amount > 0;

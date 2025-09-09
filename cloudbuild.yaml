@@ -45,7 +45,7 @@ steps:
           echo "Running $f"
           bq query --use_legacy_sql=false "$(sed "s/{{project}}/${PROJECT_ID}/g" "$f")"
         done
-
+#dummy run
   # - name: gcr.io/cloud-builders/gcloud
   #   entrypoint: bash
   #   args:
