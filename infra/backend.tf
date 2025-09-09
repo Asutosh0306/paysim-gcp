@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "TFSTATE_BUCKET_NAME_REPLACE_ME"
+    bucket = "tfstate-paysim-fin"
     prefix = "terraform/state"
   }
 }
