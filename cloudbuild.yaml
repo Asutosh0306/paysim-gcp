@@ -24,7 +24,7 @@ steps:
         "--source=app/function_ingest",
         "--set-env-vars","DATASET_BZ=bronze,TABLE_BZ=paysim_raw"
       ]
-
+# 3) Run SQL: bronze -> silver -> gold -> train/eval
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: bash
     args:
@@ -32,8 +32,18 @@ steps:
       - |
         for f in sql/*.sql; do
           echo "Running $f"
-          gcloud bq query --use_legacy_sql=false "$(sed "s/{{project}}/${PROJECT_ID}/g" "$f")"
+          bq query --use_legacy_sql=false "$(sed "s/{{project}}/${PROJECT_ID}/g" "$f")"
         done
+
+  # - name: gcr.io/cloud-builders/gcloud
+  #   entrypoint: bash
+  #   args:
+  #     - -lc
+  #     - |
+  #       for f in sql/*.sql; do
+  #         echo "Running $f"
+  #         gcloud bq query --use_legacy_sql=false "$(sed "s/{{project}}/${PROJECT_ID}/g" "$f")"
+  #       done
 
 substitutions:
   _REGION: europe-west2
