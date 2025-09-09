@@ -1,17 +1,15 @@
-CREATE OR REPLACE TABLE `paysim-fin.silver.paysim_clean` AS
+CREATE OR REPLACE TABLE `{{project}}.silver.paysim_clean` AS
 SELECT
   step,
   type,
   amount,
-  nameorig,
-  oldbalanceorg,
-  newbalanceorig,
-  namedest,
-  oldbalancedest,
-  newbalancedest,
-  isfraud,
-  isflaggedfraud,
-  source_object,
-  ingest_ts
-FROM `paysim-fin.bronze.paysim_raw`
+  nameOrig,
+  oldbalanceOrg,
+  newbalanceOrig,
+  nameDest,
+  oldbalanceDest,
+  newbalanceDest,
+  isFraud,
+  isFlaggedFraud
+FROM `{{project}}.bronze.paysim_raw`
 WHERE amount > 0;

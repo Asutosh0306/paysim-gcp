@@ -1,4 +1,4 @@
-CREATE OR REPLACE MODEL `paysim-fin.gold.fraud_lr`
+CREATE OR REPLACE MODEL `{{project}}.gold.fraud_lr`
 OPTIONS(model_type = 'logistic_reg', input_label_cols=['label_isfraud']) AS
 SELECT
   amount,
@@ -13,4 +13,4 @@ SELECT
     ELSE 0
   END AS type_code,
   label_isfraud
-FROM `paysim-fin.gold.paysim_features`;
+FROM `{{project}}.gold.paysim_features`;

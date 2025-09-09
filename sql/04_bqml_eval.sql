@@ -1,2 +1,2 @@
 SELECT *
-FROM ML.EVALUATE(MODEL `paysim-fin.gold.fraud_lr`);
+FROM ML.EVALUATE(MODEL `{{project}}.gold.fraud_lr`);
