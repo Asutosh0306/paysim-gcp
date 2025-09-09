@@ -13,7 +13,6 @@ steps:
         terraform validate
         terraform plan -out=tfplan -var="project_id=$PROJECT_ID" -var="region=${_REGION}" -var="location=${_REGION}"
         terraform apply -auto-approve tfplan
-
   - name: gcr.io/cloud-builders/gcloud
     args:
       [
@@ -22,8 +21,20 @@ steps:
         "--entry-point=gcs_ingest",
         "--trigger-bucket=${PROJECT_ID}-raw",
         "--source=app/function_ingest",
+        "--memory=1Gi","--timeout=540",
         "--set-env-vars","DATASET_BZ=bronze,TABLE_BZ=paysim_raw"
       ]
+
+  # - name: gcr.io/cloud-builders/gcloud
+  #   args:
+  #     [
+  #       "functions","deploy","loan-csv-to-bq",
+  #       "--gen2","--runtime=python311","--region=${_REGION}",
+  #       "--entry-point=gcs_ingest",
+  #       "--trigger-bucket=${PROJECT_ID}-raw",
+  #       "--source=app/function_ingest",
+  #       "--set-env-vars","DATASET_BZ=bronze,TABLE_BZ=paysim_raw"
+  #     ]
 # 3) Run SQL: bronze -> silver -> gold -> train/eval
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: bash
