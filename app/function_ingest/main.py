@@ -3,11 +3,13 @@ from google.cloud import bigquery
 from cloudevents.http import CloudEvent
 import functions_framework
 
-PROJECT    = os.environ.get("GCP_PROJECT") or os.environ.get("PROJECT_ID")
+bq = bigquery.Client()
+
+PROJECT = bq.project
 DATASET_BZ = os.environ.get("DATASET_BZ", "bronze")
 TABLE_BZ   = os.environ.get("TABLE_BZ", "paysim_raw")
 
-bq = bigquery.Client()
+
 
 @functions_framework.cloud_event
 def gcs_ingest(event: CloudEvent):
@@ -29,7 +31,7 @@ def gcs_ingest(event: CloudEvent):
         allow_jagged_rows=True,
         ignore_unknown_values=True,
         quote_character='"',
-        skip_leading_rows=0,
+        skip_leading_rows=1,
     )
 
     job = bq.load_table_from_uri(uri, table_id, job_config=job_config)
